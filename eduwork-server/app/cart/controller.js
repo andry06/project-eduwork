@@ -31,9 +31,10 @@ const update = async (req, res, next) => {
                 }
             }
 
-            return res.json(cartItems);
-
         }));
+
+        return res.json(cartItems);
+        
     }catch(err){
         if(err && err.name === 'ValidationError'){
             return res.json({

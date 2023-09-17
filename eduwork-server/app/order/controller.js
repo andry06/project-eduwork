@@ -7,7 +7,7 @@ const OrderItem = require('../order-item/model');
 const store = async (req, res, next) => {
     try{
         let { delivery_fee, delivery_address } = req.body;
-        let items = await CartItem.find({user: req.user._id}).populasi('product');
+        let items = await CartItem.find({user: req.user._id}).populate('product');
         if(!items){
             return res.json({
                 error: 1,

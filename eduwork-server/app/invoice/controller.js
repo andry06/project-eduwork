@@ -14,12 +14,12 @@ const show = async (req, res, next) => {
         }
 
         let { order_id } = req.params;
-        let invoice = await Invoice
+        let dataInvoice = await Invoice
             .findOne({order: order_id})
             .populate('order')
             .populate('user');
 
-        return res.json(invoice);
+        return res.json(dataInvoice);
     }catch(err){
         return res.json({
             error: 1,

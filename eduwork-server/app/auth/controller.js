@@ -89,10 +89,29 @@ const me = (req, res, next) => {
     res.json(req.user);
 }
 
+// const show = async (req, res, next) => {
+//     try { 
+        
+//         let { id } = req.params;
+//         let user = await User.findById(id);
+//         res.json(user);
+//     }catch(err){
+//         if(err && err.name === 'ValidationError'){
+//             return res.json({
+//                 error: 1,
+//                 message: err.message,
+//                 fields: err.errors
+//             });
+//         }
+//         next(err); 
+//     }
+// }
+
 module.exports = {
     register,
     localStrategy,
     login, 
     logout,
-    me
+    me, 
+    
 }
