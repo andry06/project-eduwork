@@ -11,7 +11,7 @@ const PageAccount = () => {
 
     let dispatch = useDispatch();
     const navigate = useNavigate();
-    let [selectProfile, setProfile] = useState('');
+    let [selectProfile, setProfile] = useState('active');
     let [selectAddress, setAddress] = useState('');
     const submitLogout =  () => {
 

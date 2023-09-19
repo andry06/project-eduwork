@@ -91,7 +91,7 @@ const RegisterPage = () => {
                                     </Form.Group>
                                     <Form.Group className="mb-3 text-start text-primary fw-bold" controlId="email">
                                         <Form.Label className="ms-1">Email</Form.Label>
-                                        <Form.Control size="sm" type="email" name="email" placeholder="Masukan Email" autoComplete="off" 
+                                        <Form.Control size="sm" type="email" name="email" placeholder="Masukan Email" 
                                             onChange={(e) => { setRegister({...dataRegister, email: e.target.value}) }} />
                                     </Form.Group>
                                     <Form.Group className="mb-1 text-start text-primary fw-bold" controlId="password">

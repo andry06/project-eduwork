@@ -10,7 +10,7 @@ import PageAccount from './app/pages/Account';
 import Profile from './app/components/Profile';
 import { ProtectedRouteAuth, ProtectedRouteUser } from './app/ProtectedRoute';
 import Address from './app/components/Address';
-import IndexAccount from './app/components/Account';
+
 
 
 
@@ -26,7 +26,7 @@ function App() {
                         <Route path="/login" element={ <ProtectedRouteAuth> <LoginPage /> </ProtectedRouteAuth>} />
                         <Route path="/register" element={<ProtectedRouteAuth> <RegisterPage /> </ProtectedRouteAuth>} />
                         <Route path="/account" element={ <ProtectedRouteUser> <PageAccount /> </ProtectedRouteUser> }>
-                          <Route path="" element={<IndexAccount />} />
+                          <Route path="" element={<Profile />} />
                           <Route path="profile" element={<Profile />} />
                           <Route path="address" element={<Address />} />
                         </Route>

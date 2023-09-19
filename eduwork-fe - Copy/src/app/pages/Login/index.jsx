@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { actUserLogin } from "../../features/Auth/actions";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -57,8 +57,6 @@ const LoginPage = () => {
  }
 
 
-
-
     return (
       <div>
          <TopBar />
@@ -78,7 +76,7 @@ const LoginPage = () => {
                       <Form onSubmit={submitLogin} >
                         <Form.Group className="mb-3 text-start text-primary fw-bold" controlId="email">
                           <Form.Label className="ms-1">Email</Form.Label>
-                          <Form.Control size="sm" type="email" name="email" placeholder="Masukan Email" autoComplete="on" 
+                          <Form.Control size="sm" type="email" name="email" placeholder="Masukan Email" 
                             onChange={(e) => { setLogin({...dataLogin, email: e.target.value}) }} />
                         </Form.Group>
                         <Form.Group className="mb-1 text-start text-primary fw-bold" controlId="password">
