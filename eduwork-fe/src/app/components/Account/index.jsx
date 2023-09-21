@@ -1,11 +1,13 @@
 import { useSelector } from "react-redux";
+import { capitalizeFirst } from "../../capitalize";
 
 const IndexAccount = () => {
     let auth = useSelector(state => state.auth);
-
+    const nama = capitalizeFirst(auth.user.full_name);
+    
     if(auth.user !== null){
         return(
-            <h4 className="text-start">SELAMAT DATANG DI HALAMAN ACCOUNT {auth.user.full_name.toUpperCase()}</h4>
+            <h4 className="text-start">Selamat Datang Di Halaman Account {nama}</h4>
         )
     }
 }

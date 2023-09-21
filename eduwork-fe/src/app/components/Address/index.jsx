@@ -9,15 +9,12 @@ const Address = () => {
     
 //batas awal utk handle index view alamat
     const [dataAddress, setAddress] = useState([]);
-    const [formAdd, setFormAdd] = useState({});
-    const [formEdit, setFormEdit] = useState({});
     const [refresh, setRefresh] = useState(false);
     const [swalProps, setSwalProps] = useState({});
     const [swalSuccess, setSwalSuccess] = useState({});
     const [swalConfirm, setSwalConfirm] = useState({});
-    const [dataEdit, setDataEdit] = useState([]);
 
-     useEffect(() => {  
+    useEffect(() => {  
         apiGetAddress()
         .then(res => {
             setAddress(res.data.data);
@@ -29,6 +26,7 @@ const Address = () => {
  //batas akhir utk handle index view alamat
 
 //batas awal handle add address
+    const [formAdd, setFormAdd] = useState({});
     const [showAdd, setShowAdd] = useState(false);
     const handleShowAdd = () => setShowAdd(true);
     const handleCloseAdd = () => {
@@ -66,7 +64,9 @@ const Address = () => {
 
 //batas akhir handle add address
 
-//bataas awal handle edit address
+//batas awal handle edit address
+    const [formEdit, setFormEdit] = useState({});
+    const [dataEdit, setDataEdit] = useState([]);
     const [showEdit, setShowEdit] = useState(false);
 
     const handleCloseEdit = () => {
@@ -106,7 +106,7 @@ const Address = () => {
                 show: true,
                 icon: 'success',
                 title: 'SUCCESS',
-                text: 'Alamat Berhasil diedit'
+                text: 'Alamat baru erhasil diedit'
                 }); 
             }
             
@@ -172,7 +172,7 @@ const Address = () => {
                         <th>No</th>
                         <th className="text-center">Nama</th>
                         <th className="text-center">Detail</th>
-                        <th width="12%" className="text-center">Action</th>
+                        <th width="15%" className="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -208,8 +208,8 @@ const Address = () => {
                             show: false,
                         });
                         setFormAdd({});
-                        setFormEdit({});
                         handleCloseAdd();
+                        setFormEdit({});
                         handleCloseEdit();
                         setRefresh(!refresh);
                     }}

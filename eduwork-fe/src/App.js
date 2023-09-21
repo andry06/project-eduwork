@@ -8,9 +8,14 @@ import RegisterPage from './app/pages/Register';
 import PageNotFound from './app/pages/NotFound';
 import PageAccount from './app/pages/Account';
 import Profile from './app/components/Profile';
-import { ProtectedRouteAuth, ProtectedRouteUser } from './app/ProtectedRoute';
+import { ProtectedRouteAdmin, ProtectedRouteAuth, ProtectedRouteUser } from './app/ProtectedRoute';
 import Address from './app/components/Address';
 import IndexAccount from './app/components/Account';
+import Category from './app/components/Category';
+import Tag from './app/components/Tag';
+import Product from './app/components/Product';
+import HomePage from './app/pages/Home';
+import PosStore from './app/index';
 
 
 
@@ -21,17 +26,20 @@ function App() {
         <Provider store={store}>
         <BrowserRouter>
                     <Routes>
-                         
-                        <Route path="/" element={ <ProtectedRouteAuth> <LoginPage /> </ProtectedRouteAuth> } />
+                      <Route path="/" element={<PosStore />} >
+                        <Route path="" element={<HomePage />} />
                         <Route path="/login" element={ <ProtectedRouteAuth> <LoginPage /> </ProtectedRouteAuth>} />
                         <Route path="/register" element={<ProtectedRouteAuth> <RegisterPage /> </ProtectedRouteAuth>} />
                         <Route path="/account" element={ <ProtectedRouteUser> <PageAccount /> </ProtectedRouteUser> }>
                           <Route path="" element={<IndexAccount />} />
                           <Route path="profile" element={<Profile />} />
                           <Route path="address" element={<Address />} />
+                          <Route path="category" element={<ProtectedRouteAdmin> <Category /> </ProtectedRouteAdmin>} />
+                          <Route path="tag" element={<ProtectedRouteAdmin> <Tag /> </ProtectedRouteAdmin>} />
+                          <Route path="product" element={<ProtectedRouteAdmin> <Product /> </ProtectedRouteAdmin>} />
                         </Route>
-                        <Route path="*" element={<PageNotFound />} />
-                  
+                      </Route>
+                      <Route path="*" element={<PageNotFound />} />
                     </Routes>
                  </BrowserRouter>
 

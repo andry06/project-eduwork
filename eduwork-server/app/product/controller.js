@@ -64,8 +64,11 @@ const store = async (req, res, next) => {
          //update karena relasi dengan tags one to many
         if(payload.tags && payload.tags.length > 0){
             let tags = await Tag.find({name: {$in: payload.tags}});
+           
             if(tags.length){
-                payload = {...payload, tags: tags.map(tag => tag._id)};
+                
+                payload = {...payload, tags: tags.map(tag => tag._id)}
+                console.log(payload)
             }else{
                 delete payload.tags;
             }

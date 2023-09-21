@@ -20,6 +20,11 @@ a.nav-link:hover {
     color: #ffffff; 
 }
 
+a.nav-link:focus {
+
+    color: #ffffff; 
+}
+
 a.dropdown-item:hover {
     background-color: #0454cc; 
     color: #ffffff; 

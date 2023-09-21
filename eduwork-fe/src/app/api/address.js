@@ -16,7 +16,7 @@ export const apiPostAddress = async(data) => {
 
     return await axios.post(`${config.urlAPI}/api/delivery-addresses`, data, {
         headers: {
-            authorization: `Bearer ${token}`
+            'authorization': `Bearer ${token}`
         }
     })
 }

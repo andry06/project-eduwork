@@ -59,8 +59,8 @@ const RegisterPage = () => {
 
     return(
         <div>
-            <TopBar />
-                <Container fluid>
+
+                <Container style={{marginTop: '90px' }}>
                     <Row className="justify-content-center fs-6">
                         <Col sm={4}>
                             <Card>
@@ -115,7 +115,6 @@ const RegisterPage = () => {
                         </Col>
                     </Row>
                 </Container>
-            <Footer />
         </div>
     )
 }

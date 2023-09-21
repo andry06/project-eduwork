@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import TopBar from "../../components/TopBar";
 import Footer from "../../components/Footer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { actUserLogout } from "../../features/Auth/actions";
 import { apiLogoutUser } from "../../api/auth";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -13,6 +13,10 @@ const PageAccount = () => {
     const navigate = useNavigate();
     let [selectProfile, setProfile] = useState('');
     let [selectAddress, setAddress] = useState('');
+    let [selectCategory, setCategory] = useState('');
+    let [selectTag, setTag] = useState('');
+    let [selectProduct, setProduct] = useState('');
+
     const submitLogout =  () => {
 
          apiLogoutUser()
@@ -32,44 +36,113 @@ const PageAccount = () => {
         navigate('/account/profile');
         setProfile('active');
         setAddress('');
+        setCategory('');
+        setTag('');
+        setProduct('');
     }
 
     const submitAddress = () =>{
         navigate('/account/address');
         setProfile('');
         setAddress('active');
+        setCategory('');
+        setTag('');
+        setProduct('');
     }
 
+    const submitCategory = () =>{
+        navigate('/account/category');
+        setProfile('');
+        setAddress('');
+        setCategory('active');
+        setTag('');
+        setProduct('');
+    }
 
-   return(
-        <div>
-            <TopBar />
-                <Container>
-                        <Card >
-                            <Card.Header className="text-start text-white bg-primary"><h6>Account</h6></Card.Header>
-                            <Card.Body>
-                                <Row>
-                                <Col sm={3} >
-                                    <ListGroup  className="text-start h6 " >
-                                        <ListGroup.Item className="list-group-item list-group-item-action" active={selectProfile} action onClick={submitProfile} > Profile</ListGroup.Item>
-                                        <ListGroup.Item className="list-group-item list-group-item-action"  >Pemesanan</ListGroup.Item>
-                                        <ListGroup.Item className="list-group-item list-group-item-action" active={selectAddress} action onClick={submitAddress} >Alamat</ListGroup.Item>
-                                        <ListGroup.Item className="list-group-item list-group-item-action" action onClick={submitLogout}>Logout</ListGroup.Item>
-                                    </ListGroup>
-                                </Col>
-                                <Col sm={9} >
-                                    
-                                    <Outlet />
+    const submitTag = () =>{
+        navigate('/account/tag');
+        setProfile('');
+        setAddress('');
+        setCategory('');
+        setTag('active');
+        setProduct('');
+    }
 
-                                </Col>
-                                </Row>
-                            </Card.Body>
-                        </Card>
-                       
+    const submitProduct = () =>{
+        navigate('/account/product');
+        setProfile('');
+        setAddress('');
+        setCategory('');
+        setTag('');
+        setProduct('active');
+    }
+
+    let auth = useSelector(state => state.auth);
+    if(auth.user.role === 'user'){
+        return(
+            <div>
+                    <Container style={{marginBottom: '100px', marginTop: '90px' }}>
+                            <Card >
+                                <Card.Header className="text-start text-white bg-primary"><h6>Account</h6></Card.Header>
+                                <Card.Body>
+                                    <Row>
+                                    <Col sm={3} >
+                                        <ListGroup  className="text-start h6 " >
+                                            <ListGroup.Item className="list-group-item list-group-item-action" active={selectProfile} action onClick={submitProfile} > Profile</ListGroup.Item>
+                                            <ListGroup.Item className="list-group-item list-group-item-action"  >Pemesanan</ListGroup.Item>
+                                            <ListGroup.Item className="list-group-item list-group-item-action" active={selectAddress} action onClick={submitAddress} >Alamat</ListGroup.Item>
+                                            <ListGroup.Item className="list-group-item list-group-item-action" action onClick={submitLogout}>Logout</ListGroup.Item>
+                                        </ListGroup>
+                                    </Col>
+                                    <Col sm={9}>
+                                        <Card style={{ minHeight: '300px' }}>
+                                            <Card.Body>
+                                                <Outlet />
+                                            </Card.Body>
+                                        </Card>
+
+                                    </Col>
+                                    </Row>
+                                </Card.Body>
+                            </Card>
+                        
+                    </Container>
+                
+            </div>
+        )
+    }else if(auth.user.role === 'admin'){
+        return(
+            <div>
+                <Container style={{marginBottom: '100px', marginTop: '90px' }}>
+                    <Card >
+                        <Card.Header className="text-start text-white bg-primary"><h6>Management Store</h6></Card.Header>
+                        <Card.Body>
+                            <Row>
+                            <Col sm={3} >
+                                <ListGroup  className="text-start h6 " >
+                                    <ListGroup.Item className="list-group-item list-group-item-action" active={selectProfile} action onClick={submitProfile} > Profile</ListGroup.Item>
+                                    <ListGroup.Item className="list-group-item list-group-item-action"  >Pemesanan</ListGroup.Item>
+                                    <ListGroup.Item className="list-group-item list-group-item-action" active={selectAddress} action onClick={submitAddress} >Alamat</ListGroup.Item>
+                                    <ListGroup.Item className="list-group-item list-group-item-action" active={selectCategory} action onClick={submitCategory}>Kelola Kategori</ListGroup.Item>
+                                    <ListGroup.Item className="list-group-item list-group-item-action" active={selectTag} action onClick={submitTag}>Kelola Tags</ListGroup.Item>
+                                    <ListGroup.Item className="list-group-item list-group-item-action" active={selectProduct} action onClick={submitProduct} >Add Product</ListGroup.Item>
+                                    <ListGroup.Item className="list-group-item list-group-item-action" action onClick={submitLogout}>Logout</ListGroup.Item>
+                                </ListGroup>
+                            </Col>
+                            <Col sm={9} >
+                                <Card style={{ minHeight: '300px' }}>
+                                    <Card.Body>
+                                        <Outlet />
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            </Row>
+                        </Card.Body>
+                    </Card>
                 </Container>
-            <Footer />
-        </div>
-   )
+            </div>
+        )
+    }
 }
 
 export default PageAccount;

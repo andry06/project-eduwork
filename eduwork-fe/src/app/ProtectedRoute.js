@@ -16,5 +16,13 @@ const ProtectedRouteAuth = (props) =>  {
     return props.children;
 }
 
+const ProtectedRouteAdmin = (props) =>  {
+    let { user } = localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth')) : {};
 
-export  {ProtectedRouteUser, ProtectedRouteAuth};
+    if(user.role !== 'admin') return <Navigate to="/account" />
+
+    return props.children;
+}
+
+
+export  {ProtectedRouteUser, ProtectedRouteAuth, ProtectedRouteAdmin};
