@@ -16,7 +16,7 @@ const LoginPage = () => {
   let navigate = useNavigate();
   // const [Error, setError] = useState('');
   let dispatch = useDispatch();
-
+  
   const [swalProps, setSwalProps] = useState({});
 
   //ini utk fitur show password
@@ -40,7 +40,6 @@ const LoginPage = () => {
         dispatch(actUserLogin(res.data));
         localStorage.setItem('auth', JSON.stringify(res.data));
         navigate('/account');
-       
       }else{
         setSwalProps({
           show: true,
@@ -56,13 +55,10 @@ const LoginPage = () => {
     
  }
 
-
-
-
     return (
       <div>
  
-          <Container style={{marginTop: '90px' }}>
+          <Container style={{marginTop: '90px', marginBottom: '120px'}}>
             <Row className="justify-content-center fs-6">
                 <Col sm={4}>
                   <Card>

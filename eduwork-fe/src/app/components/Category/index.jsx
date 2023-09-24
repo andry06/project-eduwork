@@ -40,7 +40,6 @@ const Category = () => {
        
         apiPostCategory(formAdd)
         .then(res => {
-            console.log(res)
             if(res.data.error){
                 setSwalProps({
                     show: true,

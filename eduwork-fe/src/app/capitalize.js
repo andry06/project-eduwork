@@ -6,3 +6,10 @@ export const capitalizeFirst = (text) => {
         }
         return arr.join(" ")       
 }
+
+export const rupiahFormat = (number)=>{
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR"
+    }).format(number);
+  }

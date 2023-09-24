@@ -106,7 +106,7 @@ const Address = () => {
                 show: true,
                 icon: 'success',
                 title: 'SUCCESS',
-                text: 'Alamat baru erhasil diedit'
+                text: 'Alamat baru berhasil diedit'
                 }); 
             }
             

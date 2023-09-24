@@ -12,6 +12,6 @@ export const apiPostProduct = async(data) => {
     })
 }
 
-export const apiGetProduct = async() => {
-    return await axios.get(`${config.urlAPI}/api/products`)
+export const apiGetProduct = async(query) => {
+    return await axios.get(`${config.urlAPI}/api/products?${query}`)
 }

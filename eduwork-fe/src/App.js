@@ -16,6 +16,7 @@ import Tag from './app/components/Tag';
 import Product from './app/components/Product';
 import HomePage from './app/pages/Home';
 import PosStore from './app/index';
+import CartPage from './app/pages/Cart';
 
 
 
@@ -30,6 +31,7 @@ function App() {
                         <Route path="" element={<HomePage />} />
                         <Route path="/login" element={ <ProtectedRouteAuth> <LoginPage /> </ProtectedRouteAuth>} />
                         <Route path="/register" element={<ProtectedRouteAuth> <RegisterPage /> </ProtectedRouteAuth>} />
+                        <Route path="/cart" element={ <CartPage />} />
                         <Route path="/account" element={ <ProtectedRouteUser> <PageAccount /> </ProtectedRouteUser> }>
                           <Route path="" element={<IndexAccount />} />
                           <Route path="profile" element={<Profile />} />

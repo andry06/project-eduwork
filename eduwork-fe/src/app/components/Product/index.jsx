@@ -144,7 +144,7 @@ const addProduct = (e) => {
                         <br />
                         <Row>
                             {dataTag.map((tag, i) => (
-                            <Col  xs={4} md={2} sm={3} key={i} >
+                            <Col  xs={4} sm={3} md={2}  key={i} >
                                 <Form.Check type="checkbox" key={i}  name="tag" value={tag.name} label={tag.name} id={`tag-${i}`}
                                     onChange={handleChangeCheckbox} />
                             </Col>

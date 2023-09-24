@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
-import TopBar from "../../components/TopBar";
-import Footer from "../../components/Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { actUserLogout } from "../../features/Auth/actions";
 import { apiLogoutUser } from "../../api/auth";
 import { Outlet, useNavigate } from "react-router-dom";
+import { actClearItem } from "../../features/Cart/actions";
 
 const PageAccount = () => {
 
@@ -18,18 +17,18 @@ const PageAccount = () => {
     let [selectProduct, setProduct] = useState('');
 
     const submitLogout =  () => {
-
          apiLogoutUser()
         .then(() => {
             localStorage.removeItem('auth');
+            localStorage.removeItem('cart');
             dispatch(actUserLogout());
+            dispatch(actClearItem());
             navigate('/login');
             return
         })
         .catch(err => {
           console.log(err.message);
-        });
-        
+        });  
     }
 
     const submitProfile = () =>{
