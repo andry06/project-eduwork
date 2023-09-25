@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiDeleteAddress, apiGetAddress, apiPostAddress, apiPutAddress } from "../../api/address"
+import { apiDeleteAddress, apiGetAddress, apiGetRegionIndonesia, apiPostAddress, apiPutAddress } from "../../api/address"
 import { Button, Form, Modal, Table } from "react-bootstrap";
 import {faEdit, faTrash, faAdd } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -13,7 +13,18 @@ const Address = () => {
     const [swalProps, setSwalProps] = useState({});
     const [swalSuccess, setSwalSuccess] = useState({});
     const [swalConfirm, setSwalConfirm] = useState({});
+    const [dataProvinsi, setProvinsi] = useState([]);
+    const [dataKabupaten, setKabupaten] = useState([]);
+    const [dataKecamatan, setKecamatan] = useState([]);
+    const [dataKelurahan, setKelurahan] = useState([]);
+    const [formAdd, setFormAdd] = useState({provinsi: '', kabupaten: '', kecamatan: ''});
+    const [formEdit, setFormEdit] = useState({});
+    const [dataEdit, setDataEdit] = useState({});
+    const [showEdit, setShowEdit] = useState(false);
+    const [reload, setReload] = useState(false);
 
+   
+    //ambil data address utk tampil table address
     useEffect(() => {  
         apiGetAddress()
         .then(res => {
@@ -23,14 +34,103 @@ const Address = () => {
         console.log(err.message);
         });
     },[refresh]);
+
+    //ambil nilai provinsi
+    useEffect(() => {  
+        const params='provinces'
+        apiGetRegionIndonesia(params)
+        .then(res => {
+            setProvinsi(res.data)
+        })
+        .catch(err => {
+        console.log(err.message);
+        });
+    },[]);
+
+    //ambil nilai kabupaten
+    useEffect(() => {
+
+        if(formAdd.provinsi || dataEdit.provinsi ){
+            
+            const provinsi = dataProvinsi.filter(function(obj) {
+                if(formAdd.provinsi){
+                    return obj.name === formAdd.provinsi;
+                }
+                
+                if(dataEdit.provinsi){
+                    if(formEdit.provinsi){
+                        return obj.name === formEdit.provinsi;
+                    }else{
+                        return obj.name === dataEdit.provinsi;
+                    }
+                }
+            })
+
+            const params=`regencies/${provinsi[0].id}`;
+            apiGetRegionIndonesia(params)
+            .then(res => {
+                setKabupaten(res.data);
+            })
+            .catch(err => {
+            console.log(err.message);
+            });
+        }
+        
+    },[formAdd.provinsi, reload ]);
+
+    // console.log(dataKabupaten)
+
+    //ambil nilai kecamatan
+    useEffect(() => {
+    
+        if(formAdd.kabupaten ){
+            
+            const kabupaten = dataKabupaten.filter(function(obj) { 
+                    return obj.name === formAdd.kabupaten;
+            });
+        
+            const params=`districts/${kabupaten[0].id}`;
+           
+            apiGetRegionIndonesia(params)
+            .then(res => {
+                setKecamatan(res.data);
+                console.log(res)
+            })
+            .catch(err => {
+            console.log(err.message);
+            });
+        }
+        
+    },[formAdd.provinsi, formAdd.kabupaten])
+
+    //ambil nilai kelurahan
+    useEffect(() => {
+        
+        if(formAdd.kecamatan){
+            const kecamatan = dataKecamatan.filter(function(obj) {
+                return obj.name === formAdd.kecamatan;
+              })
+            const params=`villages/${kecamatan[0].id}`;
+            
+            apiGetRegionIndonesia(params)
+            .then(res => {
+
+                setKelurahan(res.data);
+            })
+            .catch(err => {
+            console.log(err.message);
+            });
+        }
+        
+    },[formAdd.provinsi, formAdd.kabupaten, formAdd.kecamatan]);
  //batas akhir utk handle index view alamat
 
 //batas awal handle add address
-    const [formAdd, setFormAdd] = useState({});
+
     const [showAdd, setShowAdd] = useState(false);
     const handleShowAdd = () => setShowAdd(true);
     const handleCloseAdd = () => {
-        setFormAdd({});
+        setFormAdd({provinsi: '', kabupaten: '', kecamatan: ''});
         setShowAdd(false);
     } 
 
@@ -65,9 +165,7 @@ const Address = () => {
 //batas akhir handle add address
 
 //batas awal handle edit address
-    const [formEdit, setFormEdit] = useState({});
-    const [dataEdit, setDataEdit] = useState([]);
-    const [showEdit, setShowEdit] = useState(false);
+    
 
     const handleCloseEdit = () => {
         setFormEdit({});
@@ -75,20 +173,24 @@ const Address = () => {
     } 
 
     const handleShowEdit = (id) => {
-        setShowEdit(true);
+        setReload(!reload);
         const showEdit =  dataAddress.filter(filter => filter._id === id)
         setDataEdit(showEdit[0]);
+        setTimeout(function() {
+            setShowEdit(true);
+        }, 100);
     }
- 
+    
     const editAddress = (id) => {
-        // e.preventDefault();
+
         const nama = document.getElementById("namaEdit").value;
         const detail = document.getElementById("detailEdit").value;
         const kelurahan = document.getElementById("kelurahanEdit").value;
-        const kecamatan = document.getElementById("kecamatanEdit").value;
-        const kabupaten = document.getElementById("kabupatenEdit").value;
-        const provinsi = document.getElementById("provinsiEdit").value;
-
+        const kecamatan = (document.getElementById("kecamatanEdit").value === undefined) ? '' : document.getElementById("kecamatanEdit").value
+        const kabupaten = (document.getElementById("kabupatenEdit").value === undefined) ? '' : document.getElementById("kabupatenEdit").value
+        const provinsi = (document.getElementById("provinsiEdit").value === undefined) ? '' : document.getElementById("provinsiEdit").value
+        
+   
         setFormEdit({...formEdit, nama, detail, kelurahan, kecamatan, kabupaten, provinsi}) 
         
         apiPutAddress(id, formEdit)
@@ -158,6 +260,7 @@ const Address = () => {
 }
 //batas akhir handle delete address
 
+
     return (
         
         <div className="text-start mt-2">
@@ -198,7 +301,8 @@ const Address = () => {
                         setSwalProps({
                             show: false,
                         });
-                    
+                        setFormAdd({provinsi: '', kabupaten: '', kecamatan: ''});
+                        setFormEdit({});
                     }}
                 />
 
@@ -207,7 +311,7 @@ const Address = () => {
                         setSwalSuccess({
                             show: false,
                         });
-                        setFormAdd({});
+                        setFormAdd({provinsi: '', kabupaten: '', kecamatan: ''});
                         handleCloseAdd();
                         setFormEdit({});
                         handleCloseEdit();
@@ -244,31 +348,62 @@ const Address = () => {
                     <Form.Control size="sm" type="name" name="nama" placeholder="Masukan Nama Alamat Baru" 
                         onChange={(e) => { setFormAdd({...formAdd, nama: e.target.value}) }} />
                 </Form.Group>
+                
+                <Form.Group className="mb-3 text-start fw-bold" controlId="provinsi">
+                    <Form.Label className="ms-1">Provinsi</Form.Label>
+                    <Form.Select aria-label="provinsi" name="provinsi" 
+                         onChange={(e) => { setFormAdd({...formAdd, provinsi: e.target.value});
+                            }}>
+                            <option>Pilih Provinsi</option>
+                           {dataProvinsi.map((row, i) => (
+                                <option value={row.name} key={i}>{row.name}</option>
+                            ))}             
+                    </Form.Select>
+                </Form.Group>
+
+                <Form.Group className="mb-3 text-start fw-bold" controlId="Kabupaten">
+                    <Form.Label className="ms-1">Kabupaten</Form.Label>
+                    <Form.Select aria-label="kabupaten" name="kabupaten" 
+                         onChange={(e) => { setFormAdd({...formAdd, kabupaten: e.target.value});
+                            }}>
+                            <option>Pilih Kabupaten</option>
+                           {dataKabupaten.map((row, i) => (
+                                <option value={row.name} key={i}>{row.name}</option>
+                            ))}             
+                    </Form.Select>
+                </Form.Group>
+
+                <Form.Group className="mb-3 text-start fw-bold" controlId="kecamatan">
+                    <Form.Label className="ms-1">Kecamatan</Form.Label>
+                    <Form.Select aria-label="kecamatan" name="kecamatan" 
+                         onChange={(e) => { setFormAdd({...formAdd, kecamatan: e.target.value});
+                            }}>
+                            <option>Pilih Kecamatan</option>
+                           {dataKecamatan.map((row, i) => (
+                                <option value={row.name} key={i}>{row.name}</option>
+                            ))}             
+                    </Form.Select>
+                </Form.Group>
+
+                <Form.Group className="mb-3 text-start fw-bold" controlId="kelurahan">
+                    <Form.Label className="ms-1">Kelurahan</Form.Label>
+                    <Form.Select aria-label="kelurahan" name="kelurahan" 
+                         onChange={(e) => { setFormAdd({...formAdd, kelurahan: e.target.value});
+                            }}>
+                            <option>Pilih Kelurahan</option>
+                           {dataKelurahan.map((row, i) => (
+                                <option value={row.name} key={i}>{row.name}</option>
+                            ))}             
+                    </Form.Select>
+                </Form.Group>
+                
                 <Form.Group className="mb-3 text-start fw-bold" controlId="detail">
                     <Form.Label className="ms-1">Detail Alamat</Form.Label>
                     <Form.Control as="textarea" rows={2} name="detail" placeholder="Masukan Detail Alamat" 
                         onChange={(e) => { setFormAdd({...formAdd, detail: e.target.value}) }} />
                 </Form.Group>
-                <Form.Group className="mb-3 text-start fw-bold" controlId="kelurahan">
-                    <Form.Label className="ms-1">Kelurahan</Form.Label>
-                    <Form.Control size="sm" type="name" name="kelurahan" placeholder="Masukan Nama Kelurahan" 
-                       onChange={(e) => { setFormAdd({...formAdd, kelurahan: e.target.value}) }} />
-                </Form.Group>
-                <Form.Group className="mb-3 text-start fw-bold" controlId="kecamatan">
-                    <Form.Label className="ms-1">Kecamatan</Form.Label>
-                    <Form.Control size="sm" type="name" name="kecamatan" placeholder="Masukan Nama Kecamatan" 
-                        onChange={(e) => { setFormAdd({...formAdd, kecamatan: e.target.value}) }} />
-                </Form.Group>
-                <Form.Group className="mb-3 text-start fw-bold" controlId="Kabupaten">
-                    <Form.Label className="ms-1">Kabupaten</Form.Label>
-                    <Form.Control size="sm" type="name" name="kabupaten" placeholder="Masukan Nama Kabupaten" 
-                        onChange={(e) => { setFormAdd({...formAdd, kabupaten: e.target.value}) }} />
-                </Form.Group>
-                <Form.Group className="mb-3 text-start fw-bold" controlId="provinsi">
-                    <Form.Label className="ms-1">Provinsi</Form.Label>
-                    <Form.Control size="sm" type="name" name="provinsi" placeholder="Masukan Nama Provinsi"
-                        onChange={(e) => { setFormAdd({...formAdd, provinsi: e.target.value}) }}  />
-                </Form.Group>
+
+
             </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -295,31 +430,52 @@ const Address = () => {
                     <Form.Control size="sm" type="name" name="namaEdit" defaultValue={dataEdit.nama}  placeholder="Masukan Nama Alamat Baru" 
                         onChange={(e) => { setFormEdit({...formEdit, nama: e.target.value}) }} />
                 </Form.Group>
-                <Form.Group className="mb-3 text-start fw-bold" controlId="detailEdit">
-                    <Form.Label className="ms-1">Detail Alamat</Form.Label>
-                    <Form.Control as="textarea" rows={2} name="detailEdit" defaultValue={dataEdit.detail} placeholder="Masukan Detail Alama"
-                        onChange={(e) => { setFormEdit({...formEdit, detail: e.target.value}) }} />
+
+                <Form.Group className="mb-3 text-start fw-bold" controlId="provinsiEdit">
+                    <Form.Label className="ms-1">Provinsi</Form.Label>
+                    <Form.Select aria-label="provinsiEdit" name="provinsiEdit" defaultValue={dataEdit.provinsi}
+                         onChange={(e) => { setFormEdit({...formEdit, provinsi: e.target.value});
+                            }}>
+                            <option>Pilih Provinsi</option>
+                           {dataProvinsi.map((row, i) => (
+                                <option value={row.name} key={i}>{row.name}</option>
+                            ))}             
+                    </Form.Select>
                 </Form.Group>
+
+                <Form.Group className="mb-3 text-start fw-bold" controlId="kabupatenEdit">
+                    <Form.Label className="ms-1">Kabupaten</Form.Label>
+                    <Form.Select aria-label="kabupatenEdit" name="kabupatenEdit" defaultValue={dataEdit.kabupaten}
+                         onChange={(e) => { setFormEdit({...formEdit, kabupaten: e.target.value});
+                            }}>
+                            <option value="tidak_ada">Pilih Kabupaten</option>
+                           {dataKabupaten.map((row, i) => (
+                                <option value={row.name} key={i}>{row.name}</option>
+                            ))}             
+                    </Form.Select>
+                </Form.Group>
+
+                <Form.Group className="mb-3 text-start fw-bold" controlId="kecamatanEdit">
+                    <Form.Label className="ms-1">Kecamatan</Form.Label>
+                    <Form.Control size="sm" type="name" name="kecamatanEdit" defaultValue={dataEdit.kecamatan} placeholder="Masukan Nama Kelurahan"
+                        onChange={(e) => { setFormEdit({...formEdit, kecamatan: e.target.value}) }} />   
+                </Form.Group>
+
                 <Form.Group className="mb-3 text-start fw-bold" controlId="kelurahanEdit">
                     <Form.Label className="ms-1">Kelurahan</Form.Label>
                     <Form.Control size="sm" type="name" name="kelurahanEdit" defaultValue={dataEdit.kelurahan} placeholder="Masukan Nama Kelurahan"
                         onChange={(e) => { setFormEdit({...formEdit, kelurahan: e.target.value}) }} />
                 </Form.Group>
-                <Form.Group className="mb-3 text-start fw-bold" controlId="kecamatanEdit">
-                    <Form.Label className="ms-1">Kecamatan</Form.Label>
-                    <Form.Control size="sm" type="name" name="kecamatanEdit" defaultValue={dataEdit.kecamatan} placeholder="Masukan Nama Kecamatan"
-                        onChange={(e) => { setFormEdit({...formEdit, kecamatan: e.target.value}) }} />
+               
+
+                <Form.Group className="mb-3 text-start fw-bold" controlId="detailEdit">
+                    <Form.Label className="ms-1">Detail Alamat</Form.Label>
+                    <Form.Control as="textarea" rows={2} name="detailEdit" defaultValue={dataEdit.detail} placeholder="Masukan Detail Alama"
+                        onChange={(e) => { setFormEdit({...formEdit, detail: e.target.value}) }} />
                 </Form.Group>
-                <Form.Group className="mb-3 text-start fw-bold" controlId="kabupatenEdit">
-                    <Form.Label className="ms-1">Kabupaten</Form.Label>
-                    <Form.Control size="sm" type="name" name="KabupatenEdit" defaultValue={dataEdit.kabupaten} placeholder="Masukan Nama Kabupaten" 
-                        onChange={(e) => { setFormEdit({...formEdit, kabupaten: e.target.value}) }} />
-                </Form.Group>
-                <Form.Group className="mb-3 text-start fw-bold" controlId="provinsiEdit">
-                    <Form.Label className="ms-1">Provinsi</Form.Label>
-                    <Form.Control size="sm" type="name" name="provinsiEdit" defaultValue={dataEdit.provinsi} placeholder="Masukan Nama Provinsi"
-                        onChange={(e) => { setFormEdit({...formEdit, provinsi: e.target.value}) }} />
-                </Form.Group>
+               
+               
+
             </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -336,5 +492,6 @@ const Address = () => {
         </div>
     )
 }
+
 
 export default Address;

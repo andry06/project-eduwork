@@ -20,17 +20,10 @@ import { rupiahFormat } from "../../capitalize";
     useEffect(() => {  
         apiGetCart()
         .then(res => {
-                setDataCart(res.data);
-                setSubTotal(res.data.reduce((qtyBefore, qtyCurrent) => {
-                    return qtyBefore + (qtyCurrent.qty * qtyCurrent.price);
-                }, 0))
-                let testData = res.data.map((data) => (
-                    {_id: data.product._id,
-                    product: { _id: data.product._id},
-                    qty: data.qty
-                }
-                ))
-               
+            setDataCart(res.data);
+            setSubTotal(res.data.reduce((qtyBefore, qtyCurrent) => {
+                return qtyBefore + (qtyCurrent.qty * qtyCurrent.price);
+            }, 0))               
         })
         .catch(err => {
         console.log(err.message);
@@ -46,7 +39,7 @@ import { rupiahFormat } from "../../capitalize";
         if(mount){
             localStorage.setItem('cart', JSON.stringify(cart));
             apiSaveCart(cart)
-            .then((res) => {
+            .then(() => {
               setRefresh(!refresh)
             })
             .catch(err => {
@@ -60,8 +53,6 @@ import { rupiahFormat } from "../../capitalize";
         setMount(true)
     }
 
-
-    
 
     return (
         <Container style={{marginBottom: '100px', marginTop: '90px', minHeight: '375px' }}>

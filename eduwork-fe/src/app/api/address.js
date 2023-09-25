@@ -40,3 +40,8 @@ export const apiDeleteAddress = async(id) => {
         }
     })
 }
+
+export const apiGetRegionIndonesia = async(param) => {
+   
+    return await axios.get(`https://www.emsifa.com/api-wilayah-indonesia/api/${param}.json`)
+}

@@ -23,7 +23,6 @@ const TopBar = () => {
     const [dataCategory, setCategory] = useState([]);
     useEffect(() => {  
        if(auth.token){
-        console.log('iya')
             apiGetCart()
             .then(res => {
                     let testData = res.data.map((data) => (
