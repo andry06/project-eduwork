@@ -7,9 +7,11 @@ import { actAddItem, actDecItem } from "../../features/Cart/actions";
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { rupiahFormat } from "../../capitalize";
+import { useNavigate } from "react-router-dom";
 
  const CartPage = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     //batas awal tampil data
     const [dataCart, setDataCart] = useState([]);
     const cart = useSelector(state => state.cart);
@@ -20,13 +22,14 @@ import { rupiahFormat } from "../../capitalize";
     useEffect(() => {  
         apiGetCart()
         .then(res => {
+            
             setDataCart(res.data);
             setSubTotal(res.data.reduce((qtyBefore, qtyCurrent) => {
                 return qtyBefore + (qtyCurrent.qty * qtyCurrent.price);
             }, 0))               
         })
         .catch(err => {
-        console.log(err.message);
+            console.log(err.message);
         });
     },[refresh]);
 
@@ -53,6 +56,10 @@ import { rupiahFormat } from "../../capitalize";
         setMount(true)
     }
 
+    const handleCheckout = () => {
+        navigate('/checkout');
+    }
+
 
     return (
         <Container style={{marginBottom: '100px', marginTop: '90px', minHeight: '375px' }}>
@@ -63,7 +70,7 @@ import { rupiahFormat } from "../../capitalize";
                 {/* <Card.Title className="text-start">Sub Total :</Card.Title> */}
                    
                         <Col xs={12}>
-                         <Table className="table table-responsive hover" style={{ fontSize: '88%' }} >
+                         <Table className="table table-responsive" hover responsive style={{ fontSize: '88%' }} >
                             <thead>
                                 <tr>
                                 <th>Gambar</th>
@@ -99,7 +106,7 @@ import { rupiahFormat } from "../../capitalize";
                         </Table>
                         </Col>
                 </Card.Body>
-                <Card.Footer className="btn text-white text-center bg-primary"  > <FontAwesomeIcon  icon={faBookmark} /> Checkout</Card.Footer> 
+                <Card.Footer className="text-white text-end"  > <Button className="btn-sm" disabled={dataCart.length===0 ? true : false} onClick={handleCheckout} > <FontAwesomeIcon  icon={faBookmark} /> Checkout</Button></Card.Footer> 
             </Card>
         </Container>
     )

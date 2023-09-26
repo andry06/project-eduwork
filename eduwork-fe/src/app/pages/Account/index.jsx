@@ -12,6 +12,7 @@ const PageAccount = () => {
     const navigate = useNavigate();
     let [selectProfile, setProfile] = useState('');
     let [selectAddress, setAddress] = useState('');
+    let [selectPemesanan, setPemesanan] = useState('');
     let [selectCategory, setCategory] = useState('');
     let [selectTag, setTag] = useState('');
     let [selectProduct, setProduct] = useState('');
@@ -38,6 +39,7 @@ const PageAccount = () => {
         setCategory('');
         setTag('');
         setProduct('');
+        setPemesanan('');
     }
 
     const submitAddress = () =>{
@@ -47,6 +49,17 @@ const PageAccount = () => {
         setCategory('');
         setTag('');
         setProduct('');
+        setPemesanan('');
+    }
+
+    const submitPemesanan = () =>{
+        navigate('/account/pemesanan');
+        setProfile('');
+        setAddress('');
+        setCategory('');
+        setTag('');
+        setProduct('');
+        setPemesanan('active');
     }
 
     const submitCategory = () =>{
@@ -56,6 +69,7 @@ const PageAccount = () => {
         setCategory('active');
         setTag('');
         setProduct('');
+        setPemesanan('');
     }
 
     const submitTag = () =>{
@@ -65,6 +79,7 @@ const PageAccount = () => {
         setCategory('');
         setTag('active');
         setProduct('');
+        setPemesanan('');
     }
 
     const submitProduct = () =>{
@@ -74,6 +89,7 @@ const PageAccount = () => {
         setCategory('');
         setTag('');
         setProduct('active');
+        setPemesanan('');
     }
 
     let auth = useSelector(state => state.auth);
@@ -120,7 +136,7 @@ const PageAccount = () => {
                             <Col sm={3} >
                                 <ListGroup  className="text-start h6 " >
                                     <ListGroup.Item className="list-group-item list-group-item-action" active={selectProfile} action onClick={submitProfile} > Profile</ListGroup.Item>
-                                    <ListGroup.Item className="list-group-item list-group-item-action"  >Pemesanan</ListGroup.Item>
+                                    <ListGroup.Item className="list-group-item list-group-item-action" active={selectPemesanan} action onClick={submitPemesanan} >Pemesanan</ListGroup.Item>
                                     <ListGroup.Item className="list-group-item list-group-item-action" active={selectAddress} action onClick={submitAddress} >Alamat</ListGroup.Item>
                                     <ListGroup.Item className="list-group-item list-group-item-action" active={selectCategory} action onClick={submitCategory}>Kelola Kategori</ListGroup.Item>
                                     <ListGroup.Item className="list-group-item list-group-item-action" active={selectTag} action onClick={submitTag}>Kelola Tags</ListGroup.Item>

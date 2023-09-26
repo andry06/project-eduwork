@@ -36,7 +36,6 @@ const LoginPage = () => {
     apiLoginUser(dataLogin)
     .then((res) => {
       if(!res.data.error){
-        // console.log(res);
         dispatch(actUserLogin(res.data));
         localStorage.setItem('auth', JSON.stringify(res.data));
         navigate('/account');

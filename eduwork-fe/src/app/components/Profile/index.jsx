@@ -8,7 +8,7 @@ const Profile = () => {
             <>
                 
                 <Container className="text-start">
-                    <h3 >My Account</h3>
+                    <h4 >My Account</h4>
                     <br />
                     <Form>
                         <Form.Group className="mb-3" controlId="full_name">

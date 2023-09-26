@@ -17,6 +17,9 @@ import Product from './app/components/Product';
 import HomePage from './app/pages/Home';
 import PosStore from './app/index';
 import CartPage from './app/pages/Cart';
+import CheckoutPage from './app/pages/Checkout';
+import AddressChecklist from './app/pages/Checkout/AddressChecklist';
+import Pemesanan from './app/components/Pemesanan';
 
 
 
@@ -31,10 +34,12 @@ function App() {
                         <Route path="" element={<HomePage />} />
                         <Route path="/login" element={ <ProtectedRouteAuth> <LoginPage /> </ProtectedRouteAuth>} />
                         <Route path="/register" element={<ProtectedRouteAuth> <RegisterPage /> </ProtectedRouteAuth>} />
-                        <Route path="/cart" element={ <CartPage />} />
+                        <Route path="/cart" element={  <ProtectedRouteUser> <CartPage />  </ProtectedRouteUser>} />
+                        <Route path="/checkout" element={  <ProtectedRouteUser> <CheckoutPage />  </ProtectedRouteUser>} />
                         <Route path="/account" element={ <ProtectedRouteUser> <PageAccount /> </ProtectedRouteUser> }>
                           <Route path="" element={<IndexAccount />} />
                           <Route path="profile" element={<Profile />} />
+                          <Route path="pemesanan" element={<Pemesanan />} />
                           <Route path="address" element={<Address />} />
                           <Route path="category" element={<ProtectedRouteAdmin> <Category /> </ProtectedRouteAdmin>} />
                           <Route path="tag" element={<ProtectedRouteAdmin> <Tag /> </ProtectedRouteAdmin>} />

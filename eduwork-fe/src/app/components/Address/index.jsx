@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiDeleteAddress, apiGetAddress, apiGetRegionIndonesia, apiPostAddress, apiPutAddress } from "../../api/address"
-import { Button, Form, Modal, Table } from "react-bootstrap";
+import { Button, Container, Form, Modal, Table } from "react-bootstrap";
 import {faEdit, faTrash, faAdd } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import SweetAlert2 from "react-sweetalert2";
@@ -263,10 +263,10 @@ const Address = () => {
 
     return (
         
-        <div className="text-start mt-2">
+        <div className="text-start">
             
 {/* batas awal index address */}
-
+        <Container>
             <h4 className="text-start">Daftar Alamat</h4> 
             <Button className="btn btn-sm btn-success my-3" onClick={handleShowAdd}> <FontAwesomeIcon icon={faAdd} /> Tambah</Button>
             <Table striped bordered style={{ fontSize: '90%' }} >
@@ -295,7 +295,7 @@ const Address = () => {
                      ))}
                 </tbody>
                 </Table>
-                
+            </Container>    
                 <SweetAlert2 {...swalProps}
                     didClose={() => {
                         setSwalProps({
@@ -490,6 +490,7 @@ const Address = () => {
     </Modal>
 {/* batas akhir Modal Edit  */}
         </div>
+
     )
 }
 

@@ -13,7 +13,7 @@ const Category = () => {
     const [swalSuccess, setSwalSuccess] = useState({});
     const [swalConfirm, setSwalConfirm] = useState({});
 
-    //batas awal tampil category
+    //batas awal tampil data
     useEffect(() => {  
         apiGetCategory()
         .then(res => {
@@ -24,7 +24,7 @@ const Category = () => {
         });
     },[refresh]);
 
-    //batas awal tampil category
+    //batas awal tampil data
 
     //batas awal handle add
     const [formAdd, setFormAdd] = useState({});
