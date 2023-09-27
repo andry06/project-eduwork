@@ -30,7 +30,11 @@ const index = async (req, res, next) => {
             }
         }
 
-        let count = await Product.find().countDocuments();
+        if(category.length){
+            
+        }
+        
+        let count = await Product.find(criteria).countDocuments();
 
 
         let product = await Product

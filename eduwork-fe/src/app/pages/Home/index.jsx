@@ -20,6 +20,7 @@ const HomePage = () => {
     const [mount, setMount] = useState(false);    
     let dataFilterTags = {};
 
+
     //batas awal utk skip dan limit
     const skip = produk.currentPage*produk.limitPage;
     //batas akhir skip dan limit
@@ -31,12 +32,6 @@ const HomePage = () => {
     produk.tags.map((checklist) => (
         query += `&tags=${checklist}`
     ));
-
-    let queryNotLimit = `q=${produk.search}&category=${produk.category}&limit=0`
-    produk.tags.map((checklist) => (
-        queryNotLimit += `&tags=${checklist}`
-    ));
-
         
     //batas awal tampil data
     const [dataProduct, setDataProduct] = useState([]);
@@ -48,24 +43,13 @@ const HomePage = () => {
             }else{
                 setNotFound(false)
                 setDataProduct(res.data.data);
+                dispatch(actSetTotalItem(res.data.count))
             }
         })
         .catch(err => {
         console.log(err.message);
     });
-    },[query]);
-
-    // query ambil total data no limit
-    useEffect(() => {  
-        apiGetProduct(queryNotLimit)
-        .then(response => {
-                dispatch(actSetTotalItem(response.data.data.length))
-        })
-        .catch(err => {
-        console.log(err.message);
-    });
-    },[query]);
-    //batas akhir tampil data product
+    },[query, dispatch]);
 
     //batas awal tampil data Tags utk checkbox 
     const [dataTag, setTag] = useState([]);
@@ -160,7 +144,7 @@ const HomePage = () => {
                 </Row>
 
                 <Row className="justify-content-center mb-4">
-                   
+                   {totalPage > 0 &&
                     <ReactPaginate 
                         previousLabel={'previous'}
                         nextLabel={'next'}
@@ -182,7 +166,7 @@ const HomePage = () => {
                         initialPage={(produk.currentPage)}
                         disableInitialCallback={false}    
                     />
-
+}
                     Total Data : {produk.totalItem} Items
                 </Row>
             </Container>
