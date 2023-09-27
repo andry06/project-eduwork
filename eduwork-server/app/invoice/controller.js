@@ -3,7 +3,16 @@ const Invoice = require('../invoice/model');
 const { policyFor } = require('../../utils');
 
 const show = async (req, res, next) => {
+   
     try {
+
+        let { order_id } = req.params;
+        console.log(req.params)
+        let invoice = await Invoice
+            .findOne({order: order_id})
+            .populate('order')
+            .populate('user');
+            
         let policy = policyFor(req.user);
         let subjectInvoice = subject('Invoice', {...invoice, user_id: invoice.user._id });
         if(!policy.can('read', subjectInvoice)){
@@ -12,15 +21,13 @@ const show = async (req, res, next) => {
                 message: `Anda tidak memiliki akses untuk melihat invoice ini`
             });
         }
+  
 
-        let { order_id } = req.params;
-        let dataInvoice = await Invoice
-            .findOne({order: order_id})
-            .populate('order')
-            .populate('user');
-
-        return res.json(dataInvoice);
+       
+        
+        return res.json(invoice);
     }catch(err){
+        console.log(err)
         return res.json({
             error: 1,
             message: `Error when getting invoice.`

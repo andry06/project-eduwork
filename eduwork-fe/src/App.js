@@ -20,6 +20,7 @@ import CartPage from './app/pages/Cart';
 import CheckoutPage from './app/pages/Checkout';
 import AddressChecklist from './app/pages/Checkout/AddressChecklist';
 import Pemesanan from './app/components/Pemesanan';
+import InvoicePage from './app/pages/Invoice';
 
 
 
@@ -36,6 +37,7 @@ function App() {
                         <Route path="/register" element={<ProtectedRouteAuth> <RegisterPage /> </ProtectedRouteAuth>} />
                         <Route path="/cart" element={  <ProtectedRouteUser> <CartPage />  </ProtectedRouteUser>} />
                         <Route path="/checkout" element={  <ProtectedRouteUser> <CheckoutPage />  </ProtectedRouteUser>} />
+                        <Route path="/invoice/:id" element={  <ProtectedRouteUser> <InvoicePage />  </ProtectedRouteUser>} />
                         <Route path="/account" element={ <ProtectedRouteUser> <PageAccount /> </ProtectedRouteUser> }>
                           <Route path="" element={<IndexAccount />} />
                           <Route path="profile" element={<Profile />} />

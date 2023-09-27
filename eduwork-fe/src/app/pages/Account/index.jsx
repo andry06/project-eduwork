@@ -104,7 +104,7 @@ const PageAccount = () => {
                                     <Col sm={3} >
                                         <ListGroup  className="text-start h6 " >
                                             <ListGroup.Item className="list-group-item list-group-item-action" active={selectProfile} action onClick={submitProfile} > Profile</ListGroup.Item>
-                                            <ListGroup.Item className="list-group-item list-group-item-action"  >Pemesanan</ListGroup.Item>
+                                            <ListGroup.Item className="list-group-item list-group-item-action" active={selectPemesanan} action onClick={submitPemesanan}  >Pemesanan</ListGroup.Item>
                                             <ListGroup.Item className="list-group-item list-group-item-action" active={selectAddress} action onClick={submitAddress} >Alamat</ListGroup.Item>
                                             <ListGroup.Item className="list-group-item list-group-item-action" action onClick={submitLogout}>Logout</ListGroup.Item>
                                         </ListGroup>

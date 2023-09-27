@@ -1,52 +1,51 @@
 import { useEffect } from "react";
-import { Accordion, Button, Col, Container, Row, Table } from "react-bootstrap";
+import { Accordion, Col, Container, Row, Table } from "react-bootstrap";
 import { apiGetOrder } from "../../api/order";
 import { useState } from "react";
 import { rupiahFormat } from "../../capitalize";
 import { faFileInvoice } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Link } from "react-router-dom";
 
 const Pemesanan = () => {   
     const [dataOrder, SetDataOrder] = useState([]);
+
     //batas awal tampil data
     useEffect(() => {  
         apiGetOrder()
         .then(res => {
             SetDataOrder(res.data.data)
-            console.log(res)
         })
         .catch(err => {
             console.log(err.message);
         });
     },[]);
-    const dateTime = new Date()
-    console.log(dateTime)
 
-    //batas awal tampil data
+  
 
     return (
         <Container>
             <Row>
                 <h4 className="text-start">Daftar Pemesanan</h4>
-                <Row className="mt-4  fw-bold">
-                    <Col md={1} className="text-center">ID</Col>
-                    <Col md={2} className="text-center">Waktu</Col>
+                <Row className="mt-4 mb-3 fw-bold">
+                    <Col md={2} className="text-center">Order ID</Col>
+                    <Col md={3} className="text-center">Waktu</Col>
                     <Col md={3} className="text-center">Total</Col>
                     <Col md={4} className="text-center">Status</Col>
-                    <Col md={2} className="text-center" >Invoice</Col>
+                   
                 </Row>
+                <Accordion>
                 {dataOrder.map((order, i) => (
-               <Accordion>
-                    <Accordion.Item eventKey={i}>
+
+                    <Accordion.Item eventKey={i}  key={i} >
                     <Accordion.Header>
-                    <Row key={i} style={{ width: '100%' }}>
-                        <Col md={1} className="text-center">{order.order_number}</Col>
-                        <Col md={2} className="text-center">{order.createdAt.substr(0,10)}</Col>
+                    <Row style={{ width: '100%' }}>
+                        <Col md={2} className="text-center">{order.order_number}</Col>
+                        <Col md={3} className="text-center">{order.createdAt.substr(0,10)}</Col>
                         <Col md={3} className="text-center">{rupiahFormat(order.order_items.reduce((qtyBefore, qtyCurrent) => {
                                     return qtyBefore + (qtyCurrent.qty * qtyCurrent.price);
                                     }, 0)+order.delivery_fee)}</Col>
                         <Col md={4} className="text-center">{order.status}</Col>
-                        <Col md={2} className="text-start"><Button className="btn btn-sm btn-success"><FontAwesomeIcon icon={faFileInvoice} className='text-white'/> Invoice</Button></Col>
                     </Row>
                     </Accordion.Header>
                     <Accordion.Body>
@@ -60,7 +59,7 @@ const Pemesanan = () => {
                             </thead>
                             <tbody>
                                 {order.order_items.map((item, i) => (
-                                <tr>
+                                <tr key={i}>
                                     <td>{item.name}</td>
                                     <td>{item.qty}</td>
                                     <td className="text-end">{rupiahFormat(item.qty*item.price)}</td>
@@ -84,13 +83,22 @@ const Pemesanan = () => {
                                     return qtyBefore + (qtyCurrent.qty * qtyCurrent.price);
                                     }, 0)+order.delivery_fee)}</td>
                                 </tr>
+                                <tr>
+                                    <td colSpan={3} className="text-end "> 
+                                    {/* <Button  className="btn btn-sm btn-success mt-1" onClick={() => handleInvoice(order._id)}>
+                                        <FontAwesomeIcon icon={faFileInvoice} className='text-white'/> Invoice
+                                    </Button> */}
+                                    <Link to={`/invoice/${order._id}`} className="btn btn-sm btn-success mt-1">
+                                        <FontAwesomeIcon icon={faFileInvoice} className='text-white'/> Invoice
+                                    </Link>
+                                    </td>
+                                </tr>
                             </tfoot>
                         </Table>
                     </Accordion.Body>
                     </Accordion.Item>
-                </Accordion>
                  ))}
-                {/* <span className="text-start">Total Semua Pemesanan : {dataOrder.count} </span> */}
+                  </Accordion>
             </Row>
         </Container>
     )

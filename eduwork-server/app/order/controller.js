@@ -25,8 +25,10 @@ const store = async (req, res, next) => {
                 kelurahan: address.kelurahan,
                 detail: address.detail
             },
+            delivery_fee: delivery_fee,
             user: req.user._id
         });
+        console.log(order)
         let orderItems = await OrderItem
             .insertMany(items.map(item=> ({
             ...item,
@@ -56,16 +58,20 @@ const index = async (req, res, next) => {
     try{
         let { skip = 0, limit =10 } = req.query;
         let count = await Order.find({user: req.user._id}).countDocuments();
-        let order = await Order
+
+        let orders = await Order
             .find({user: req.user._id})
             .skip(parseInt(skip))
             .limit(parseInt(limit))
-            .populate('order-items')
+            .populate('order_items')
             .sort('-createAt');
+            
         return res.json({
-            data: order.map(order => order.toJSON({virtuals: true})),
+            data: orders.map(order => order.toJSON({virtuals: true})),
             count
         });
+
+        
     }catch(err){
         if(err && err.name === 'ValidationError'){
             return res.json({
