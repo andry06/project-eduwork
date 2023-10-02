@@ -21,8 +21,9 @@ const Address = () => {
     const [formEdit, setFormEdit] = useState({});
     const [dataEdit, setDataEdit] = useState({});
     const [showEdit, setShowEdit] = useState(false);
-    const [reload, setReload] = useState(false);
-
+    const [reloadEdit, setReloadEdit] = useState(false);
+    const [reloadAdd, setReloadAdd] = useState(false);
+    const [showAdd, setShowAdd] = useState(false);
    
     //ambil data address utk tampil table address
     useEffect(() => {  
@@ -36,99 +37,136 @@ const Address = () => {
     },[refresh]);
 
     //ambil nilai provinsi
-    useEffect(() => {  
-        const params='provinces'
-        apiGetRegionIndonesia(params)
-        .then(res => {
-            setProvinsi(res.data)
-        })
-        .catch(err => {
-        console.log(err.message);
-        });
-    },[]);
+    useEffect(() => { 
+            const params='provinces'
+            apiGetRegionIndonesia(params)
+            .then(res => {
+                setProvinsi(res.data)
+            })
+            .catch(err => {
+            console.log(err.message);
+            });
+         
+    },[reloadEdit, reloadAdd]);
 
     //ambil nilai kabupaten
     useEffect(() => {
-
-        if(formAdd.provinsi || dataEdit.provinsi ){
-            
-            const provinsi = dataProvinsi.filter(function(obj) {
-                if(formAdd.provinsi){
-                    return obj.name === formAdd.provinsi;
+        const fetchData = () => {
+          if (formAdd.provinsi || dataEdit.provinsi) {
+            const provinsi = dataProvinsi.filter(function (obj) {
+              if (formAdd.provinsi) {
+                return obj.name === formAdd.provinsi;
+              }
+      
+              if (dataEdit.provinsi) {
+                if (formEdit.provinsi) {
+                  return obj.name === formEdit.provinsi;
+                } else {
+                  return obj.name === dataEdit.provinsi;
                 }
-                
-                if(dataEdit.provinsi){
-                    if(formEdit.provinsi){
-                        return obj.name === formEdit.provinsi;
-                    }else{
-                        return obj.name === dataEdit.provinsi;
-                    }
-                }
-            })
-
-            const params=`regencies/${provinsi[0].id}`;
-            apiGetRegionIndonesia(params)
-            .then(res => {
-                setKabupaten(res.data);
-            })
-            .catch(err => {
-            console.log(err.message);
+              }
+              return undefined;
             });
-        }
-        
-    },[formAdd.provinsi, reload ]);
+      
+            const params = `regencies/${provinsi[0].id}`;
+      
+            apiGetRegionIndonesia(params)
+              .then((res) => {
+                setKabupaten(res.data);
+              })
+              .catch((err) => {
+                console.log(err.message);
+              });
+          }
+        };
+      
+        fetchData(); // Call the fetchData function initially
+      
+        // Include the variables and fetchData in the dependency array
+      }, [formAdd.provinsi, dataProvinsi, formEdit.provinsi]);
 
-    // console.log(dataKabupaten)
+
 
     //ambil nilai kecamatan
     useEffect(() => {
-    
-        if(formAdd.kabupaten ){
-            
+
+        if(formAdd.kabupaten || dataEdit.kabupaten){
             const kabupaten = dataKabupaten.filter(function(obj) { 
-                    return obj.name === formAdd.kabupaten;
+                    // return obj.name === formAdd.kabupaten;
+
+                    if(formAdd.kabupaten){
+                        return obj.name === formAdd.kabupaten;
+                    }
+                    
+                    if(dataEdit.kabupaten){
+                        if(formEdit.kabupaten){
+                            return obj.name === formEdit.kabupaten;
+                        }else{
+                            return obj.name === dataEdit.kabupaten;
+                        }
+                    }
+                    return undefined
             });
-        
-            const params=`districts/${kabupaten[0].id}`;
-           
-            apiGetRegionIndonesia(params)
-            .then(res => {
-                setKecamatan(res.data);
-                console.log(res)
-            })
-            .catch(err => {
-            console.log(err.message);
-            });
+            if(kabupaten[0] !== undefined){
+                const params=`districts/${kabupaten[0].id}`;
+
+                apiGetRegionIndonesia(params)
+                .then(res => {
+                    setKecamatan(res.data);
+                
+                })
+                .catch(err => {
+                console.log(err.message);
+                });
+            }
         }
         
-    },[formAdd.provinsi, formAdd.kabupaten])
+    },[formAdd.provinsi, formAdd.kabupaten,  dataKabupaten, formEdit.kabupaten])
 
     //ambil nilai kelurahan
     useEffect(() => {
         
-        if(formAdd.kecamatan){
+        if(formAdd.kecamatan || dataEdit.kecamatan){
             const kecamatan = dataKecamatan.filter(function(obj) {
-                return obj.name === formAdd.kecamatan;
+                // return obj.name === formAdd.kecamatan;
+                if(formAdd.kecamatan){
+                    return obj.name === formAdd.kecamatan;
+                }
+                
+                if(dataEdit.kecamatan){
+                    if(formEdit.kecamatan){
+                        return obj.name === formEdit.kecamatan;
+                    }else{
+                        return obj.name === dataEdit.kecamatan;
+                    }
+                }
+                return undefined
               })
-            const params=`villages/${kecamatan[0].id}`;
             
-            apiGetRegionIndonesia(params)
-            .then(res => {
+            if(kecamatan[0] !== undefined){
+                const params=`villages/${kecamatan[0].id}`;
+                console.log(params)
+                apiGetRegionIndonesia(params)
+                .then(res => {
 
-                setKelurahan(res.data);
-            })
-            .catch(err => {
-            console.log(err.message);
-            });
+                    setKelurahan(res.data);
+                })
+                .catch(err => {
+                console.log(err.message);
+                });
+            }
         }
         
-    },[formAdd.provinsi, formAdd.kabupaten, formAdd.kecamatan]);
+    },[formAdd.provinsi, formAdd.kabupaten, formAdd.kecamatan,  dataKecamatan]);
  //batas akhir utk handle index view alamat
 
 //batas awal handle add address
 
-    const [showAdd, setShowAdd] = useState(false);
-    const handleShowAdd = () => setShowAdd(true);
+
+    const handleShowAdd = () => { 
+        setReloadAdd(!reloadAdd);
+        setShowAdd(true);
+    };
     const handleCloseAdd = () => {
         setFormAdd({provinsi: '', kabupaten: '', kecamatan: ''});
         setShowAdd(false);
@@ -136,7 +174,6 @@ const Address = () => {
 
     const addAddress = (e) => {
         e.preventDefault();
-       
         apiPostAddress(formAdd)
         .then(res => {
             if(res.data.error){
@@ -173,12 +210,12 @@ const Address = () => {
     } 
 
     const handleShowEdit = (id) => {
-        setReload(!reload);
-        const showEdit =  dataAddress.filter(filter => filter._id === id)
-        setDataEdit(showEdit[0]);
+        setReloadEdit(!reloadEdit);
+        const Edit =  dataAddress.filter(filter => filter._id === id)
+        setDataEdit(Edit[0]);
         setTimeout(function() {
             setShowEdit(true);
-        }, 100);
+        }, 300);
     }
     
     const editAddress = (id) => {
@@ -434,7 +471,11 @@ const Address = () => {
                 <Form.Group className="mb-3 text-start fw-bold" controlId="provinsiEdit">
                     <Form.Label className="ms-1">Provinsi</Form.Label>
                     <Form.Select aria-label="provinsiEdit" name="provinsiEdit" defaultValue={dataEdit.provinsi}
-                         onChange={(e) => { setFormEdit({...formEdit, provinsi: e.target.value});
+                         onChange={(e) => { 
+                            
+                            setFormEdit({...formEdit, provinsi: e.target.value});
+
+                            ;
                             }}>
                             <option>Pilih Provinsi</option>
                            {dataProvinsi.map((row, i) => (
@@ -457,14 +498,28 @@ const Address = () => {
 
                 <Form.Group className="mb-3 text-start fw-bold" controlId="kecamatanEdit">
                     <Form.Label className="ms-1">Kecamatan</Form.Label>
-                    <Form.Control size="sm" type="name" name="kecamatanEdit" defaultValue={dataEdit.kecamatan} placeholder="Masukan Nama Kelurahan"
-                        onChange={(e) => { setFormEdit({...formEdit, kecamatan: e.target.value}) }} />   
+                    <Form.Select aria-label="kecamatanEdit" name="kecamatanEdit" defaultValue={dataEdit.kecamatan} 
+                     onChange={(e) => { setFormEdit({...formEdit, kecamatan: e.target.value});
+                        }}>
+                        <option >Pilih Kecamatan</option>
+                       {dataKecamatan.map((row, i) => (
+                            <option value={row.name} key={i}>{row.name}</option>
+                        ))}             
+                    </Form.Select>
                 </Form.Group>
 
                 <Form.Group className="mb-3 text-start fw-bold" controlId="kelurahanEdit">
                     <Form.Label className="ms-1">Kelurahan</Form.Label>
-                    <Form.Control size="sm" type="name" name="kelurahanEdit" defaultValue={dataEdit.kelurahan} placeholder="Masukan Nama Kelurahan"
-                        onChange={(e) => { setFormEdit({...formEdit, kelurahan: e.target.value}) }} />
+                    {/* <Form.Control size="sm" type="name" name="kelurahanEdit" defaultValue={dataEdit.kelurahan} placeholder="Masukan Nama Kelurahan"
+                        onChange={(e) => { setFormEdit({...formEdit, kelurahan: e.target.value}) }} /> */}
+                    <Form.Select aria-label="kelurahanEdit" name="kelurahanEdit" defaultValue={dataEdit.kelurahan} 
+                     onChange={(e) => { setFormEdit({...formEdit, kelurahan: e.target.value});
+                        }}>
+                        <option >Pilih Kelurahan</option>
+                       {dataKelurahan.map((row, i) => (
+                            <option value={row.name} key={i}>{row.name}</option>
+                        ))}             
+                    </Form.Select>    
                 </Form.Group>
                
 

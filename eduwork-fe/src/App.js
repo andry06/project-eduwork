@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import store from "./app/features/store"
 
@@ -18,7 +17,6 @@ import HomePage from './app/pages/Home';
 import PosStore from './app/index';
 import CartPage from './app/pages/Cart';
 import CheckoutPage from './app/pages/Checkout';
-import AddressChecklist from './app/pages/Checkout/AddressChecklist';
 import Pemesanan from './app/components/Pemesanan';
 import InvoicePage from './app/pages/Invoice';
 

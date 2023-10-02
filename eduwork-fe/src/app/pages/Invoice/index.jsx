@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import { Button, Card, Col, Container, Row, Table } from "react-bootstrap";
+import { Card, Col, Container, Row, Table } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { apiGetInvoiceByOrderId } from "../../api/order";
 import { useState } from "react";
-import { capitalizeFirst, rupiahFormat } from "../../capitalize";
+import {  rupiahFormat } from "../../capitalize";
+import { format } from 'date-fns'
 // import * as moment from 'moment';
 
 const InvoicePage = () => {
@@ -42,7 +43,7 @@ const InvoicePage = () => {
                                     <tr>
                                         <td className="text-start" width={'15%'}>Tgl Pembelian</td>
                                         <td className="text-start" width={'1%'}> : </td>
-                                        <td className="text-start"> {dataInvoice.createdAt} </td>  
+                                        <td className="text-start"> {dataOrder.createdAt} </td>  
                                     </tr>
                                     <tr>
                                         <td className="text-start" width={'15%'}>Status Pesanan</td>

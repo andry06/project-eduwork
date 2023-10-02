@@ -6,6 +6,7 @@ import { rupiahFormat } from "../../capitalize";
 import { faFileInvoice } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from "react-router-dom";
+import { format } from 'date-fns'
 
 const Pemesanan = () => {   
     const [dataOrder, SetDataOrder] = useState([]);
@@ -41,7 +42,7 @@ const Pemesanan = () => {
                     <Accordion.Header>
                     <Row style={{ width: '100%' }}>
                         <Col md={2} className="text-center">{order.order_number}</Col>
-                        <Col md={3} className="text-center">{order.createdAt.substr(0,10)}</Col>
+                        <Col md={3} className="text-center">{format(new Date(order.createdAt), 'dd/MM/yyyy')}</Col>
                         <Col md={3} className="text-center">{rupiahFormat(order.order_items.reduce((qtyBefore, qtyCurrent) => {
                                     return qtyBefore + (qtyCurrent.qty * qtyCurrent.price);
                                     }, 0)+order.delivery_fee)}</Col>
