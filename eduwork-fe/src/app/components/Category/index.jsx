@@ -38,7 +38,7 @@ const Category = () => {
     const addCategory = (e) => {
         e.preventDefault();
        
-        apiPostCategory(formAdd)
+        apiPostCategory(formAdd) 
         .then(res => {
             if(res.data.error){
                 setSwalProps({

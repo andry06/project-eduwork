@@ -66,8 +66,6 @@ const CheckoutPage = () => {
     const handleBayar = () => {
         apiCreateOrder(dataSelect)
         .then((res) => {
-            console.log(res)
-            // localStorage.setItem('invoiceLast', JSON.stringify(res.data));
             setInvoice(res.data);
             dispatch(actClearItem());
             localStorage.removeItem('cart');

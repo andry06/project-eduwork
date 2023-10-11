@@ -90,7 +90,7 @@ const TopBar = () => {
                 <Form onSubmit={handleSearch} style={{ width: '100%' }} >    
                     <InputGroup  >
                         <Form.Control type="text"  placeholder="Cari Makanan" style={{ maxWidth: '100%' }} name="search" id="search" />
-                        <Button style={{ border: '2px solid white' }}  >
+                        <Button style={{ border: '2px solid white' }}  onSubmit={handleSearch}>
                         <FontAwesomeIcon icon={faSearch} className='text-white'/>
                     </Button>
                     </InputGroup>

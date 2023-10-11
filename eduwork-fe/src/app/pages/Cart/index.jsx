@@ -1,13 +1,15 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { Button, Card, Col, Container, Image, Table } from "react-bootstrap";
-import { apiGetCart, apiSaveCart } from "../../api/cart";
+import { Button, Card, Col, Container, Form, Image, Row, Table } from "react-bootstrap";
+import { apiDeleteCart, apiGetCart, apiSaveCart } from "../../api/cart";
 import { useDispatch, useSelector } from "react-redux";
-import { actAddItem, actDecItem } from "../../features/Cart/actions";
-import { faBookmark } from "@fortawesome/free-solid-svg-icons";
+import { actAddItem, actClearItem, actDecItem } from "../../features/Cart/actions";
+import { faBookmark, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { rupiahFormat } from "../../capitalize";
 import { useNavigate } from "react-router-dom";
+import SweetAlert2 from "react-sweetalert2";
+
 
  const CartPage = () => {
     const dispatch = useDispatch();
@@ -18,11 +20,15 @@ import { useNavigate } from "react-router-dom";
     const [mount, setMount] = useState(false);
     const [refresh, setRefresh] = useState(false);
     const [subTotal, setSubTotal] = useState(0);
+    const [swalProps, setSwalProps] = useState({});
+    const [swalSuccess, setSwalSuccess] = useState({});
+    const [swalConfirm, setSwalConfirm] = useState({});
+   
+    
 
     useEffect(() => {  
         apiGetCart()
         .then(res => {
-            
             setDataCart(res.data);
             setSubTotal(res.data.reduce((qtyBefore, qtyCurrent) => {
                 return qtyBefore + (qtyCurrent.qty * qtyCurrent.price);
@@ -61,6 +67,44 @@ import { useNavigate } from "react-router-dom";
     }
 
 
+    const handleTrash = () => {
+        setSwalConfirm({
+            show: true,
+            title: 'Apa anda yakin?',
+            text: "data yang di reset tidak bisa di balikkan lagi, harus menambahkan dari awal lagi !",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',                    
+            preConfirm: (iya) => {
+                if(iya){
+                    apiDeleteCart()
+                    .then(res => {
+                        if(res.data.deletedCount === 0){
+                            setSwalProps({
+                                show: true,
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: "Data Cart Masih Kosong",
+                            });
+                        }else{
+                            setSwalSuccess({
+                                show: true,
+                                icon: 'success',
+                                title: 'SUCCESS',
+                                text: 'Cart Berhasil direset'
+                            }); 
+                        }
+                    }).catch(err => {
+                        console.log(err.message);
+                    });
+                }
+            }
+        })
+    }
+
+
     return (
         <Container style={{marginBottom: '100px', marginTop: '90px', minHeight: '375px' }}>
             <Card >
@@ -88,8 +132,8 @@ import { useNavigate } from "react-router-dom";
                                     <td className="align-middle ">{rupiahFormat(data.price)}</td>
                                     <td className="align-middle">
                                         <Button className="btn-primary btn-sm" onClick={(e) => DecItemCart(data.product._id)}> - </Button>
-                                            {' '} {data.qty} {' '}
-                                        <Button className="btn-primary btn-sm" onClick={(e) => AddToCart(data.product._id)}> + </Button>
+                                            {' '} <div className="d-inline-block btn"> {data.qty} </div> {' '}
+                                        <Button className="btn-primary btn-sm" onClick={(e) => AddToCart (data.product._id) }> + </Button>
                                      </td>
                                      <td className="align-middle text-end pe-4">{rupiahFormat(data.price*data.qty)}</td>
                                 </tr>
@@ -106,9 +150,58 @@ import { useNavigate } from "react-router-dom";
                         </Table>
                         </Col>
                 </Card.Body>
-                <Card.Footer className="text-white text-end"  > <Button className="btn-sm" disabled={dataCart.length===0 ? true : false} onClick={handleCheckout} > <FontAwesomeIcon  icon={faBookmark} /> Checkout</Button></Card.Footer> 
+                <Card.Footer className="text-white"> 
+                    <Row>
+                        <Col className="text-start">
+                            <Button className="btn-sm btn-danger" disabled={dataCart.length===0 ? true : false} onClick={handleTrash} > <FontAwesomeIcon  icon={faTrashCan} /> Reset Cart</Button>
+                        </Col>
+                        <Col className="text-end">
+                            <Button className="btn-sm" disabled={dataCart.length===0 ? true : false} onClick={handleCheckout} > <FontAwesomeIcon  icon={faBookmark} /> Checkout</Button>
+                        </Col>
+                    </Row>
+                </Card.Footer> 
             </Card>
+
+            {/* batas awal Handle sweet alert */}            
+            <SweetAlert2 {...swalProps}
+                    didClose={() => {
+                        setSwalProps({
+                            show: false,
+                        });
+                    
+                    }}
+                />
+
+                <SweetAlert2 {...swalSuccess}
+                    didClose={() => {
+                        setSwalSuccess({
+                            show: false,
+                        });
+                        setDataCart([]);
+                        setSubTotal(0);
+                        dispatch(actClearItem());
+                        localStorage.removeItem('cart');
+                      
+                    }}
+                />
+
+                <SweetAlert2 {...swalConfirm}
+                    didClose={() => {
+                        setSwalConfirm({
+                            show: false,
+                        });
+                    }}
+                    onConfirm={() => {
+                        setSwalConfirm({
+                            show: false,
+                        });
+
+                    }}
+                />
+{/* batas akhir Handle sweet alert */}
+
         </Container>
+        
     )
  }
 

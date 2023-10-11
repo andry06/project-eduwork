@@ -20,3 +20,13 @@ export const apiGetCart = async() => {
        }
    })
 }
+
+export const apiDeleteCart = async() => {
+   const { token } = localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth')) : {};
+ 
+    return await axios.delete(`${config.urlAPI}/api/carts`, {
+       headers: {
+           authorization: `Bearer ${token}`
+        }
+    })
+ }
