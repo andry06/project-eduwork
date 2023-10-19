@@ -12,4 +12,9 @@ router.get('/carts',
     cartController.index
 )
 
+router.delete('/carts',
+    police_check('delete', 'Cart'),
+    cartController.destroy
+)
+
 module.exports = router;

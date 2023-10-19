@@ -84,8 +84,8 @@ const store = async (req, res, next) => {
             let filename = req.file.filename + '.' + originalExt;
             let target_path = path.resolve(config.rootPath, `public/images/products/${filename}`);
 
-            const src = fs.createReadStream(tmp_path);
-            const dest = fs.createWriteStream(target_path);
+            const src = fs.createReadStream(tmp_path); // utk membaca file
+            const dest = fs.createWriteStream(target_path); //utk menulis atau memindah kan file ke target path
             src.pipe(dest);  
 
             src.on('end', async () => {
@@ -94,7 +94,8 @@ const store = async (req, res, next) => {
                     await product.save()
                     return res.json(product);
                 }catch(err){
-                    fs.unlinkSync(target_path);
+                    //jika ada error dari validasi nya maka hapus image file nya
+                    fs.unlinkSync(target_path); // utk hapus image
                     if(err && err.name === 'ValidationError'){
                         return res.json({
                             error: 1,

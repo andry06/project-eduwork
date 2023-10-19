@@ -4,18 +4,19 @@ import { Card, Container } from "react-bootstrap";
 import { useState } from "react";
 import { apiGetAddress } from "../../api/address";
 import { useEffect } from "react";
-import { apiGetCart } from "../../api/cart";
+import { apiGetCartProduct } from "../../api/cart";
 import AddressChecklist from "./AddressChecklist";
 import DetailPesanan from "./DetailPesanan";
 import { apiCreateOrder } from "../../api/order";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { actClearItem } from "../../features/Cart/actions";
 import LastInvoice from "./LastInvoice";
 
 
 const CheckoutPage = () => {
     const dispatch = useDispatch();
-    const [dataSelect, setDataSelect] = useState({delivery_fee: '20000', delivery_address: ''});
+    const checkout = useSelector(state => state.checkout);
+    const [dataSelect, setDataSelect] = useState({delivery_fee: '20000', delivery_address: '', idProduct: checkout.idProduct});
     const [dataFilterId, setDataFilterId] = useState({})
     const [dataAddress, setAddress] = useState([]);
     const [formAdrress, setFormAddress] = useState(true);
@@ -38,7 +39,7 @@ const CheckoutPage = () => {
     },[]);
 
     useEffect(() => {  
-        apiGetCart()
+        apiGetCartProduct(checkout.idProduct)
         .then(res => {
             setDataCart(res.data);
             setSubTotal(res.data.reduce((qtyBefore, qtyCurrent) => {

@@ -21,6 +21,16 @@ export const apiGetCart = async() => {
    })
 }
 
+export const apiGetCartProduct = async(products) => {
+   const { token } = localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth')) : {};
+ 
+    return await axios.get(`${config.urlAPI}/api/carts?products=${products}`, {
+       headers: {
+           authorization: `Bearer ${token}`
+        }
+    })
+ }
+
 export const apiDeleteCart = async() => {
    const { token } = localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth')) : {};
  

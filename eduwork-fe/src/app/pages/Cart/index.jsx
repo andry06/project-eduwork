@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { rupiahFormat } from "../../capitalize";
 import { useNavigate } from "react-router-dom";
 import SweetAlert2 from "react-sweetalert2";
+import { actChecklistItem } from "../../features/Checkout/actions";
 
 
  const CartPage = () => {
@@ -23,7 +24,9 @@ import SweetAlert2 from "react-sweetalert2";
     const [swalProps, setSwalProps] = useState({});
     const [swalSuccess, setSwalSuccess] = useState({});
     const [swalConfirm, setSwalConfirm] = useState({});
-   
+    const [isCheckAll, setIsCheckAll] = useState(false);
+    const [idProduct, setIdProduct] = useState([]);
+
     
 
     useEffect(() => {  
@@ -63,6 +66,7 @@ import SweetAlert2 from "react-sweetalert2";
     }
 
     const handleCheckout = () => {
+        dispatch(actChecklistItem(idProduct));
         navigate('/checkout');
     }
 
@@ -104,7 +108,25 @@ import SweetAlert2 from "react-sweetalert2";
         })
     }
 
+    const handleChangeCheckbox = (e) => {
+        const { value, checked } = e.target;
+        setIdProduct([...idProduct, value]);
+        if (!checked) {
+          setIdProduct(idProduct.filter(item => item !== value));
+        }
+    
+    };
 
+    const handleSelectAll = e => {
+  
+        setIsCheckAll(!isCheckAll);
+        setIdProduct(dataCart.map(li => li.product._id));
+        if (isCheckAll) {
+            setIdProduct([]);
+        }
+      };
+      
+  
     return (
         <Container style={{marginBottom: '100px', marginTop: '90px', minHeight: '375px' }}>
             <Card >
@@ -117,6 +139,16 @@ import SweetAlert2 from "react-sweetalert2";
                          <Table className="table table-responsive" hover responsive style={{ fontSize: '88%' }} >
                             <thead>
                                 <tr>
+                                <th>
+                                <input
+                                    type="checkbox"
+                                    name="selectAll"
+                                    id="selectAll"
+                                    onClick={handleSelectAll}
+                                    checked={isCheckAll}
+                                    readOnly
+                                />
+                                </th>
                                 <th>Gambar</th>
                                 <th>Nama Product</th>
                                 <th>Harga</th>
@@ -127,6 +159,7 @@ import SweetAlert2 from "react-sweetalert2";
                             <tbody>
                             {dataCart.map((data, i) => (
                                <tr key={i}>
+                                    <td><input type="checkbox" name="product" value={data.product._id} id={data.product._id} checked={idProduct.includes(data.product._id)} onClick={handleChangeCheckbox} readOnly/></td>
                                     <td><Image src={`http://localhost:3000/public/images/products/${data.image_url}`} width={80} height={70} rounded /></td>
                                     <td className="align-middle">{data.name}</td>
                                     <td className="align-middle ">{rupiahFormat(data.price)}</td>
@@ -141,7 +174,7 @@ import SweetAlert2 from "react-sweetalert2";
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colSpan={4} className="fw-bold text-end ">Sub Total : </td>
+                                    <td colSpan={5} className="fw-bold text-end ">Sub Total : </td>
                                     <td className="fw-bold text-end pe-4">
                                         {rupiahFormat(subTotal)}
                                     </td> 

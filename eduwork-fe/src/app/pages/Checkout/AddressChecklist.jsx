@@ -1,6 +1,5 @@
 import { Button, Card, Col, Form, Table } from "react-bootstrap";
 
-
 const AddressChecklist = ({dataAddress, handleKonfirmasi, setDataSelect, dataSelect, disabledButton, setDisabledButton}) => {
 
     return(
@@ -21,7 +20,7 @@ const AddressChecklist = ({dataAddress, handleKonfirmasi, setDataSelect, dataSel
                             <td className="text-center">
                                 <Form.Check  type="radio"  name="idAddress" className="formControl" value={data._id} 
                                     onClick={(e) => { 
-                                        setDataSelect({...dataSelect, delivery_address: e.target.value});
+                                        setDataSelect({...dataSelect, delivery_address: e.target.value });
                                         setDisabledButton(false)
                                 } } />
                             </td>

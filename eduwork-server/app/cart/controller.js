@@ -51,6 +51,7 @@ const index = async (req, res, next) => {
     try {
         let items = await CartItem
             .find({user: req.user._id})
+            // .find({user: req.user._id, product: {$in : ["650bb19049a5f7ccfb24b35d", "650bb26949a5f7ccfb24b372"]}})
             .populate('product');
         
         return res.json(items);
@@ -66,7 +67,25 @@ const index = async (req, res, next) => {
     }
 }
 
+const destroy = async (req, res, next) => {
+    try {
+        // console.log(req.user._id)
+        let cart = await CartItem.deleteMany({user: req.user._id});
+        return res.json(cart);
+    }catch(err){
+        if(err && err.name === 'ValidationError'){
+            return res.json({
+                erorr: 1,
+                message: err.message,
+                fields: err.errors
+            });
+        }
+        next(err);
+    }
+}
+
 module.exports = { 
     update,
-    index
+    index,
+    destroy
 }
